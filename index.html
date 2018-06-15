@@ -1,8 +1,14 @@
 <html>
     <title>SSSS</title>
     <style>
-        button { float: right; }
-        input { width: 500px; }
+        .btn {
+            margin-top: 10px; 
+            text-align: center; 
+        }
+        input { 
+            height: 5%;
+            width: 85%; 
+        }
         label { 
             text-align: right;
             display: inline-block;
@@ -24,8 +30,10 @@
             <div>
                 <label>threshold:</label> 
                 <input type="number" min="2" max="255" name="threshold" autocomplete="off" required />
+            </div>
+            <div class="btn">
+                <button>Go</button>
             </div> 
-            <button>Go</button>
             <div id="splitPlaceHolder" style="text-align: center"></div> 
         </fieldset>
     </form>
@@ -41,8 +49,10 @@
                 <label>share 2:</label> 
                 <input type="text" name="share2" autocomplete="off" required />
             </div>
-            <button>Go</button>
-            <button>Add</button>
+            <div class="btn">
+                <button>Add</button>
+                <button>Go</button>
+            </div>
             <div id="combinePlaceHolder" style="text-align: center"></div> 
         </fieldset>
     </form>
@@ -54,7 +64,9 @@
                 <label>value:</label> 
                 <input type="text" name="qrValue" autocomplete="off" required />
             </div>
-            <button>Go</button>
+            <div class="btn">
+                <button>Go</button>
+            </div>
             <div id="qrPlaceHolder" style="text-align: center"></div> 
         </fieldset>
     </form>
