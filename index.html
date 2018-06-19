@@ -167,7 +167,8 @@ form button {
 		shares.push(combineForm['share1'].value);
 		shares.push(combineForm['share2'].value);
 
-		var combo = secrets.combine(shares);
+		var comboHex = secrets.combine(shares);
+		var combo = secrets.hex2str(comboHex);
 		combinePlaceHolder.innerHTML = '<b>'+ combo +'</b>';
 	}
 
