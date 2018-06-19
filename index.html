@@ -3,16 +3,13 @@
 <title>SSSS</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
-body {font-family: Arial;}
+body { font-family: Arial; }
 
-/* Style the tab */
 .tab {
     overflow: hidden;
     border: 1px solid #ccc;
     background-color: #f1f1f1;
 }
-
-/* Style the buttons inside the tab */
 .tab button {
     background-color: inherit;
     float: left;
@@ -23,19 +20,14 @@ body {font-family: Arial;}
     transition: 0.3s;
     font-size: 17px;
 }
-
-/* Change background color of buttons on hover */
 .tab button:hover {
     background-color: #ddd;
 }
-
-/* Create an active/current tablink class */
 .tab button.active {
     background-color: #ccc;
 	font-weight: bold;
 }
 
-/* Style the tab content */
 .tabcontent {
     display: none;
     padding: 6px 12px;
@@ -70,9 +62,9 @@ form button {
 </head>
 <body>
 <div class="tab">
-  <button class="tablinks" id="splitBtn" onclick="openCity(event, 'Split')">Split</button>
-  <button class="tablinks" onclick="openCity(event, 'Combine')">Combine</button>
-  <button class="tablinks" onclick="openCity(event, 'QRGenerator')">QR Generator</button>
+  <button class="tablinks" id="splitBtn" onclick="openTab(event, 'Split')">Split</button>
+  <button class="tablinks" onclick="openTab(event, 'Combine')">Combine</button>
+  <button class="tablinks" onclick="openTab(event, 'QRGenerator')">QR Generator</button>
 </div>
 
 <div id="Split" class="tabcontent">
@@ -167,6 +159,7 @@ form button {
 	var combinePlaceHolder = document.getElementById('combinePlaceHolder');
 	combineForm.onsubmit = function(e) {
 		e.preventDefault();
+		combinePlaceHolder.innerHTML = null;
 		var shares = [];
 
 		// TODO add dynamic # of shares 
@@ -175,18 +168,13 @@ form button {
 
 		var combo = secrets.combine(shares);
 		combinePlaceHolder.innerHTML = '<b>'+ combo +'</b>';
-
-		// var qr = getQR(combo);
-		// var url = qr.createDataURL(qrCellSize);
-		// var name = 'combo.gif';
-		// combinePlaceHolder.innerHTML = '<a href="'+ url +'" download="'+ name +'">combo.gif</a>'
-		// combinePlaceHolder.children[0].click();
 	}
 
 	var qrForm = document.forms['qrForm'];
 	var qrPlaceHolder = document.getElementById('qrPlaceHolder');
 	qrForm.onsubmit = function(e) {
 		e.preventDefault();
+		qrPlaceHolder.innerHTML = null;
 		var qr = getQR(qrForm['qrValue'].value);
 		qrPlaceHolder.innerHTML = qr.createImgTag(qrCellSize);
 	}
@@ -199,7 +187,7 @@ form button {
 	}
 </script>
 <script>
-function openCity(evt, cityName) {
+function openTab(evt, cityName) {
     var i, tabcontent, tablinks;
     tabcontent = document.getElementsByClassName("tabcontent");
     for (i = 0; i < tabcontent.length; i++) {
