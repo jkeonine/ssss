@@ -1,147 +1,219 @@
 <html>
-    <title>SSSS</title>
-    <style>
-        .btn {
-            margin-top: 10px; 
-            text-align: center; 
-        }
-        input { 
-            height: 5%;
-            width: 85%; 
-        }
-        label { 
-            text-align: right;
-            display: inline-block;
-            width: 65px;
-        }
-    </style>
+<head>
+<title>SSSS</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body {font-family: Arial;}
 
-    <form name="splitForm">
-        <h2>Split</h2>
-        <fieldset>
-            <div>
-                <label>secret:</label> 
-                <input type="password" name="secret" autocomplete="off" required />
-            </div>
-            <div>
-                <label># shares:</label> 
-                <input type="number" min="2" max="255" name="numShares" autocomplete="off" required />
-            </div>
-            <div>
-                <label>threshold:</label> 
-                <input type="number" min="2" max="255" name="threshold" autocomplete="off" required />
-            </div>
-            <div class="btn">
-                <button>Go</button>
-            </div> 
-            <div id="splitPlaceHolder" style="text-align: center"></div> 
-        </fieldset>
-    </form>
+/* Style the tab */
+.tab {
+    overflow: hidden;
+    border: 1px solid #ccc;
+    background-color: #f1f1f1;
+}
 
-    <form name="combineForm">
-        <h2>Combine</h2>
-        <fieldset>
-            <div>
-                <label>share 1:</label> 
-                <input type="text" name="share1" autocomplete="off" required />
-            </div>
-            <div>
-                <label>share 2:</label> 
-                <input type="text" name="share2" autocomplete="off" required />
-            </div>
-            <div class="btn">
-                <button>Add</button>
-                <button>Go</button>
-            </div>
-            <div id="combinePlaceHolder" style="text-align: center"></div> 
-        </fieldset>
-    </form>
+/* Style the buttons inside the tab */
+.tab button {
+    background-color: inherit;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 14px 16px;
+    transition: 0.3s;
+    font-size: 17px;
+}
 
-    <form name="qrForm">
-        <h2>QR Generator</h2>
-        <fieldset>
-            <div>
-                <label>value:</label> 
-                <input type="text" name="qrValue" autocomplete="off" required />
-            </div>
-            <div class="btn">
-                <button>Go</button>
-            </div>
-            <div id="qrPlaceHolder" style="text-align: center"></div> 
-        </fieldset>
-    </form>
+/* Change background color of buttons on hover */
+.tab button:hover {
+    background-color: #ddd;
+}
 
-    <script type="text/javascript" src=".\node_modules\secrets.js\secrets.min.js"></script>
-    <script type="text/javascript" src=".\node_modules\qrcode-generator\qrcode.js"></script>
-    <script>
-        var splitForm = document.forms['splitForm'];
-        var splitPlaceHolder = document.getElementById('splitPlaceHolder');
-        var qrCellBase = 41; // const
-        var qrCellSize = 7;
-        splitForm.onsubmit = function(e) {
-            e.preventDefault();
-            splitPlaceHolder.innerHTML = null;
-            
-            var secret = splitForm['secret'].value;
-            var numShares = parseInt(splitForm['numShares'].value);
-            var threshold = parseInt(splitForm['threshold'].value);
-            
-            if(threshold > numShares) { 
-                alert('Threshold must be less than # shares'); 
-                return; 
-            }
+/* Create an active/current tablink class */
+.tab button.active {
+    background-color: #ccc;
+	font-weight: bold;
+}
 
-            try {
-                var shares = secrets.share(secret, numShares, threshold);
-            
-                for(var i = 0; i < shares.length; i++) {
-                    var share = shares[i];
-                    var qr = getQR(share);
-                    var url = qr.createDataURL(qrCellSize);
-                    var name = share + '.gif';
-                    splitPlaceHolder.innerHTML += '<a href="'+ url +'" download="'+ name +'">share '+ (i+1) +'</a> '
-                }
-                for(var i = 0; i < splitPlaceHolder.children.length; i++) {
-                    splitPlaceHolder.children[i].click();
-                }
-            } catch(ex) {
-                alert(ex);
-            }
-        }
+/* Style the tab content */
+.tabcontent {
+    display: none;
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-top: none;
+}
+label {
+  padding: 12px 12px 12px 0;
+  display: inline-block;
+}
+input {
+	width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical;
+}
+form button {
+	background-color: #4CAF50;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+	margin-top: 24px;
+}
+.half {
+	display: inline-block;
+	width: 49%;
+}
+</style>
+</head>
+<body>
+<div class="tab">
+  <button class="tablinks" id="splitBtn" onclick="openCity(event, 'Split')">Split</button>
+  <button class="tablinks" onclick="openCity(event, 'Combine')">Combine</button>
+  <button class="tablinks" onclick="openCity(event, 'QRGenerator')">QR Generator</button>
+</div>
 
-        var combineForm = document.forms['combineForm'];
-        var combinePlaceHolder = document.getElementById('combinePlaceHolder');
-        combineForm.onsubmit = function(e) {
-            e.preventDefault();
-            var shares = [];
+<div id="Split" class="tabcontent">
+  <form name="splitForm">
+		<div>
+			<label>secret:</label> 
+			<input type="password" name="secret" autocomplete="off" required />
+		</div>
+		<div class="half">
+			<label># shares:</label> 
+			<input type="number" min="2" max="255" name="numShares" autocomplete="off" required />
+		</div>
+		<div class="half">
+			<label>threshold:</label> 
+			<input type="number" min="2" max="255" name="threshold" autocomplete="off" required />
+		</div> 
+		<button>Go</button>
+		<div id="splitPlaceHolder" style="text-align: center"></div>
+  </form>
+</div>
 
-            // TODO add dynamic # of shares 
-            shares.push(combineForm['share1'].value);
-            shares.push(combineForm['share2'].value);
+<div id="Combine" class="tabcontent">
+  <form name="combineForm">
+	<div>
+		<label>share 1:</label> 
+		<input type="text" name="share1" autocomplete="off" required />
+	</div>
+	<div>
+		<label>share 2:</label> 
+		<input type="text" name="share2" autocomplete="off" required />
+	</div>
+	<div class="btn">
+		<button>Add</button>
+		<button>Go</button>
+	</div>
+	<div id="combinePlaceHolder" style="text-align: center"></div> 
+  </form>
+</div>
 
-            var combo = secrets.combine(shares);
-            combinePlaceHolder.innerHTML = '<b>'+ combo +'</b>';
+<div id="QRGenerator" class="tabcontent">
+  <form name="qrForm">
+	<div>
+		<label>value:</label> 
+		<input type="text" name="qrValue" autocomplete="off" required />
+	</div>
+	<div class="btn">
+		<button>Go</button>
+	</div>
+	<div id="qrPlaceHolder" style="text-align: center"></div> 
+  </form>
+</div>
 
-            // var qr = getQR(combo);
-            // var url = qr.createDataURL(qrCellSize);
-            // var name = 'combo.gif';
-            // combinePlaceHolder.innerHTML = '<a href="'+ url +'" download="'+ name +'">combo.gif</a>'
-            // combinePlaceHolder.children[0].click();
-        }
+<script type="text/javascript" src=".\node_modules\secrets.js\secrets.min.js"></script>
+<script type="text/javascript" src=".\node_modules\qrcode-generator\qrcode.js"></script>
+<script>
+	var splitForm = document.forms['splitForm'];
+	var splitPlaceHolder = document.getElementById('splitPlaceHolder');
+	var qrCellBase = 41; // const
+	var qrCellSize = 7;
+	splitForm.onsubmit = function(e) {
+		e.preventDefault();
+		splitPlaceHolder.innerHTML = null;
+		
+		var secret = splitForm['secret'].value;
+		var numShares = parseInt(splitForm['numShares'].value);
+		var threshold = parseInt(splitForm['threshold'].value);
+		
+		if(threshold > numShares) { 
+			alert('Threshold must be less than # shares'); 
+			return; 
+		}
 
-        var qrForm = document.forms['qrForm'];
-        var qrPlaceHolder = document.getElementById('qrPlaceHolder');
-        qrForm.onsubmit = function(e) {
-            e.preventDefault();
-            var qr = getQR(qrForm['qrValue'].value);
-            qrPlaceHolder.innerHTML = qr.createImgTag(qrCellSize);
-        }
+		try {
+			var shares = secrets.share(secret, numShares, threshold);
+		
+			for(var i = 0; i < shares.length; i++) {
+				var share = shares[i];
+				var qr = getQR(share);
+				var url = qr.createDataURL(qrCellSize);
+				var name = share + '.gif';
+				splitPlaceHolder.innerHTML += '<a href="'+ url +'" download="'+ name +'">share '+ (i+1) +'</a> '
+			}
+			for(var i = 0; i < splitPlaceHolder.children.length; i++) {
+				splitPlaceHolder.children[i].click();
+			}
+		} catch(ex) {
+			alert(ex);
+		}
+	}
 
-        function getQR(val) {
-            var qr = qrcode(0, 'L');
-            qr.addData(val);
-            qr.make();
-            return qr;
-        }
-    </script>
-</html>
+	var combineForm = document.forms['combineForm'];
+	var combinePlaceHolder = document.getElementById('combinePlaceHolder');
+	combineForm.onsubmit = function(e) {
+		e.preventDefault();
+		var shares = [];
+
+		// TODO add dynamic # of shares 
+		shares.push(combineForm['share1'].value);
+		shares.push(combineForm['share2'].value);
+
+		var combo = secrets.combine(shares);
+		combinePlaceHolder.innerHTML = '<b>'+ combo +'</b>';
+
+		// var qr = getQR(combo);
+		// var url = qr.createDataURL(qrCellSize);
+		// var name = 'combo.gif';
+		// combinePlaceHolder.innerHTML = '<a href="'+ url +'" download="'+ name +'">combo.gif</a>'
+		// combinePlaceHolder.children[0].click();
+	}
+
+	var qrForm = document.forms['qrForm'];
+	var qrPlaceHolder = document.getElementById('qrPlaceHolder');
+	qrForm.onsubmit = function(e) {
+		e.preventDefault();
+		var qr = getQR(qrForm['qrValue'].value);
+		qrPlaceHolder.innerHTML = qr.createImgTag(qrCellSize);
+	}
+
+	function getQR(val) {
+		var qr = qrcode(0, 'L');
+		qr.addData(val);
+		qr.make();
+		return qr;
+	}
+</script>
+<script>
+function openCity(evt, cityName) {
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+    document.getElementById(cityName).style.display = "block";
+    evt.currentTarget.className += " active";
+}
+document.getElementById('splitBtn').click();
+</script>
+     
+</body>
+</html> 
