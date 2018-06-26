@@ -1,6 +1,6 @@
 <html>
 <head>
-<title>SSSS</title>
+<title>Shamir's Secret Sharing Scheme</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
 body { font-family: Arial; }
@@ -54,6 +54,9 @@ form button {
     cursor: pointer;
 	margin-top: 24px;
 }
+form button.secondary {
+	background-color: steelblue;
+}
 .half {
 	display: inline-block;
 	width: 49%;
@@ -97,7 +100,7 @@ form button {
 		<input type="text" name="share2" autocomplete="off" required />
 	</div>
 	<div class="btn">
-		<button>Add</button>
+		<button class="secondary">Add</button>
 		<button>Go</button>
 	</div>
 	<div id="combinePlaceHolder" style="text-align: center"></div> 
