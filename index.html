@@ -148,7 +148,7 @@ form button.secondary {
 				var share = shares[i];
 				var qr = getQR(share);
 				var url = qr.createDataURL(qrCellSize);
-				var name = share + '.gif';
+				var name = '80' + (i+1) + '.v2.gif';
 				splitPlaceHolder.innerHTML += '<a href="'+ url +'" download="'+ name +'">share '+ (i+1) +'</a> '
 			}
 			for(var i = 0; i < splitPlaceHolder.children.length; i++) {
