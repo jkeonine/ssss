@@ -186,11 +186,12 @@ form button.secondary {
 
 	function getRaw(val) {
 		var tx = new ethereumjs.Tx(val);
+		var weiPrice = parseInt(tx.gasPrice.toString('hex'),16);
 		var rawTx = {
 			to: '0x'+tx.to.toString('hex'),
-			value: parseInt(tx.value.toString('hex'), 16),
+			value: parseInt(tx.value.toString('hex'), 16) * .000000000000000001 + ' ETH',
 			gasLimit: parseInt(tx.gasLimit.toString('hex'),16),
-			gasPrice: parseInt(tx.gasPrice.toString('hex'),16),
+			gasPrice: weiPrice + ' Wei ('+(weiPrice*.000000001)+' Gwei)',
 			nonce: parseInt(tx.nonce.toString('hex'),16),
 			data: tx.data.toString('hex'),
 			from: '0x'+tx.from.toString('hex'),
